@@ -5,7 +5,7 @@
   "main": "index.js",
   "files": ["index.js", "index.d.ts"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": ["bls", "bls12", "bls12-381", "381", "eip", "eip2333", "2333", "key", "keygen", "generation", "hd", "master", "child"],
   "author": "",

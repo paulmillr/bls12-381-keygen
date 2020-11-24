@@ -1,4 +1,4 @@
-import * as sha256 from "fast-sha256";
+import {hash as sha256, hkdf} from "fast-sha256";
 
 // Verify this with EIP-2333: https://eips.ethereum.org/EIPS/eip-2333
 
@@ -56,7 +56,7 @@ function concatBytes(...arrays: Uint8Array[]): Uint8Array {
 }
 
 function ikmToLamportSK(ikm: Uint8Array, salt: Uint8Array) {
-  const okm = sha256.hkdf(ikm, salt, undefined, 32 * 255);
+  const okm = hkdf(ikm, salt, undefined, 32 * 255);
   return Array.from({ length: 255 }, (_, i) => okm.slice(i * 32, (i + 1) * 32));
 }
 
@@ -70,8 +70,8 @@ function parentSKToLamportPK(parentSK: Uint8Array, index: number) {
   const lamport0 = ikmToLamportSK(ikm, salt);
   const notIkm = ikm.map((byte) => ~byte);
   const lamport1 = ikmToLamportSK(notIkm, salt);
-  const lamportPK = lamport0.concat(lamport1).map((part) => sha256.hash(part));
-  return sha256.hash(concatBytes(...lamportPK));
+  const lamportPK = lamport0.concat(lamport1).map((part) => sha256(part));
+  return sha256(concatBytes(...lamportPK));
 }
 
 export function hkdfModR(ikm: Uint8Array, keyInfo = new Uint8Array()) {
@@ -80,8 +80,8 @@ export function hkdfModR(ikm: Uint8Array, keyInfo = new Uint8Array()) {
   const input = concatBytes(ikm, Uint8Array.from([0x00]));
   const label = concatBytes(keyInfo, Uint8Array.from([0x00, 0x30]));
   while (SK === 0n) {
-    salt = sha256.hash(salt);
-    const okm = sha256.hkdf(input, salt, label, 48);
+    salt = sha256(salt);
+    const okm = hkdf(input, salt, label, 48);
     SK = os2ip(okm) % blsR;
   }
   return numberToBytes(SK);
