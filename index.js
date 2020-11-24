@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deriveChild = exports.deriveMaster = exports.hkdfModR = void 0;
+exports.deriveSeedTree = exports.deriveChild = exports.deriveMaster = exports.hkdfModR = void 0;
 const fast_sha256_1 = require("fast-sha256");
 // Verify this with EIP-2333: https://eips.ethereum.org/EIPS/eip-2333
 // bls12-381 r
@@ -91,3 +91,17 @@ function deriveChild(parentKey, index) {
     return hkdfModR(parentSKToLamportPK(parentKey, index));
 }
 exports.deriveChild = deriveChild;
+function deriveSeedTree(seed, path) {
+    if (typeof path !== 'string')
+        throw new Error('Derivation path must be string');
+    const indices = path.split('/');
+    if (indices.shift() !== 'm')
+        throw new Error('First character of path must be "m"');
+    const nodes = indices.map(i => Number.parseInt(i));
+    let sk = deriveMaster(seed);
+    for (const node of nodes) {
+        sk = deriveChild(sk, node);
+    }
+    return sk;
+}
+exports.deriveSeedTree = deriveSeedTree;

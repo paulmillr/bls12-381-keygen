@@ -94,3 +94,15 @@ export function deriveMaster(seed: Uint8Array): Uint8Array {
 export function deriveChild(parentKey: Uint8Array, index: number): Uint8Array {
   return hkdfModR(parentSKToLamportPK(parentKey, index));
 }
+
+export function deriveSeedTree(seed: Uint8Array, path: string) {
+  if (typeof path !== 'string') throw new Error('Derivation path must be string');
+  const indices = path.split('/');
+  if (indices.shift() !== 'm') throw new Error('First character of path must be "m"');
+  const nodes = indices.map(i => Number.parseInt(i));
+  let sk = deriveMaster(seed);
+  for (const node of nodes) {
+    sk = deriveChild(sk, node);
+  }
+  return sk;
+}
