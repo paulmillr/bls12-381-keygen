@@ -14,6 +14,9 @@ Node.js and browser:
 
 > npm install bls12-381-keygen
 
+- `deriveMaster` takes `Uint8Array` and returns `Uint8Array`
+- `deriveChild` takes `Uint8Array, number` and returns `Uint8Array`
+
 ```js
 import {deriveMaster, deriveChild} from 'bls12-381-keygen';
 const master = deriveMaster(new Uint8Array([0xde, 0xad, 0xbe, 0xef]));
