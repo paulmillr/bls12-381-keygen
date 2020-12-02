@@ -6,7 +6,7 @@ If you're looking for actual implementation of the elliptic curve,
 use module [noble-bls12-381](https://github.com/paulmillr/noble-bls12-381).
 The bls12-381-keygen only generates private keys, by EIP-2333 specification.
 
-No dependencies.
+Just one small dependency on SHA256.
 
 ## Usage
 
