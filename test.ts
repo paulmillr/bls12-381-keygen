@@ -70,8 +70,8 @@ for (const vector of vectors) {
     const [seed, expMaster, childIndex, expChild] = vector;
     const master = deriveMaster(hexToBytes(seed));
     const child = deriveChild(master, childIndex);
-    assert.equal(big(master), BigInt(expMaster));
-    assert.equal(big(child), BigInt(expChild));
+    assert.strictEqual(big(master), BigInt(expMaster), 'master key is not equal');
+    assert.strictEqual(big(child), BigInt(expChild), 'child key is not equal');
   });
 }
 

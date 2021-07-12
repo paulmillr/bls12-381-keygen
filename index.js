@@ -24,7 +24,7 @@ function numberToHex(num) {
 }
 function numberToBytesPadded(num, length = 32) {
     const hex = numberToHex(num).padStart(length * 2, '0');
-    return hexToBytes(hex).reverse();
+    return hexToBytes(hex);
 }
 // Octet Stream to Integer
 function os2ip(bytes) {

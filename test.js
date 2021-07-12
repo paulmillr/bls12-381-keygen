@@ -71,10 +71,11 @@ for (const vector of vectors) {
     i++;
     micro_should_1.should(`run vector ${i}`, () => {
         const [seed, expMaster, childIndex, expChild] = vector;
+        console.log('123', bytesToHex(_1.deriveMaster(hexToBytes(seed))));
         const master = _1.deriveMaster(hexToBytes(seed));
         const child = _1.deriveChild(master, childIndex);
-        assert_1.default.equal(big(master), BigInt(expMaster));
-        assert_1.default.equal(big(child), BigInt(expChild));
+        assert_1.default.strictEqual(big(master), BigInt(expMaster), 'master key is not equal');
+        assert_1.default.strictEqual(big(child), BigInt(expChild), 'child key is not equal');
     });
 }
 micro_should_1.should.run();

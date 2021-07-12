@@ -25,7 +25,7 @@ function numberToHex(num: number | bigint): string {
 
 function numberToBytesPadded(num: bigint, length = 32) {
   const hex = numberToHex(num).padStart(length * 2, '0');
-  return hexToBytes(hex).reverse();
+  return hexToBytes(hex);
 }
 
 // Octet Stream to Integer
