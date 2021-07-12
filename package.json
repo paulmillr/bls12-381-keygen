@@ -1,6 +1,6 @@
 {
   "name": "bls12-381-keygen",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "BLS12-381 Key Generation compatible with EIP-2333. For browsers & node.",
   "main": "index.js",
   "files": [
