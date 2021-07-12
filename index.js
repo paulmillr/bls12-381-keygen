@@ -5,16 +5,26 @@ const fast_sha256_1 = require("fast-sha256");
 // Verify this with EIP-2333: https://eips.ethereum.org/EIPS/eip-2333
 // bls12-381 r
 const blsR = 52435875175126190479447740508185965837690552500527637822603658699938581184513n;
-function numberToBytes(num) {
-    let hex = num.toString(16);
-    if (hex.length & 1)
-        hex = `0${hex}`;
+function hexToBytes(hex) {
+    if (typeof hex !== 'string') {
+        throw new TypeError('hexToBytes: expected string, got ' + typeof hex);
+    }
+    if (hex.length % 2)
+        throw new Error('hexToBytes: received invalid unpadded hex');
     const array = new Uint8Array(hex.length / 2);
     for (let i = 0; i < array.length; i++) {
         const j = i * 2;
         array[i] = Number.parseInt(hex.slice(j, j + 2), 16);
     }
     return array;
+}
+function numberToHex(num) {
+    const hex = num.toString(16);
+    return hex.length & 1 ? `0${hex}` : hex;
+}
+function numberToBytesPadded(num, length = 32) {
+    const hex = numberToHex(num).padStart(length * 2, '0');
+    return hexToBytes(hex).reverse();
 }
 // Octet Stream to Integer
 function os2ip(bytes) {
@@ -80,7 +90,7 @@ function hkdfModR(ikm, keyInfo = new Uint8Array()) {
         const okm = fast_sha256_1.hkdf(input, salt, label, 48);
         SK = os2ip(okm) % blsR;
     }
-    return numberToBytes(SK);
+    return numberToBytesPadded(SK);
 }
 exports.hkdfModR = hkdfModR;
 function deriveMaster(seed) {

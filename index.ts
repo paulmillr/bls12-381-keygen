@@ -5,15 +5,27 @@ import {hash as sha256, hkdf} from "fast-sha256";
 // bls12-381 r
 const blsR = 52435875175126190479447740508185965837690552500527637822603658699938581184513n;
 
-function numberToBytes(num: number | bigint): Uint8Array {
-  let hex = num.toString(16);
-  if (hex.length & 1) hex = `0${hex}`;
+function hexToBytes(hex: string): Uint8Array {
+  if (typeof hex !== 'string') {
+    throw new TypeError('hexToBytes: expected string, got ' + typeof hex);
+  }
+  if (hex.length % 2) throw new Error('hexToBytes: received invalid unpadded hex');
   const array = new Uint8Array(hex.length / 2);
   for (let i = 0; i < array.length; i++) {
     const j = i * 2;
     array[i] = Number.parseInt(hex.slice(j, j + 2), 16);
   }
   return array;
+}
+
+function numberToHex(num: number | bigint): string {
+  const hex = num.toString(16);
+  return hex.length & 1 ? `0${hex}` : hex;
+}
+
+function numberToBytesPadded(num: bigint, length = 32) {
+  const hex = numberToHex(num).padStart(length * 2, '0');
+  return hexToBytes(hex).reverse();
 }
 
 // Octet Stream to Integer
@@ -84,7 +96,7 @@ export function hkdfModR(ikm: Uint8Array, keyInfo = new Uint8Array()) {
     const okm = hkdf(input, salt, label, 48);
     SK = os2ip(okm) % blsR;
   }
-  return numberToBytes(SK);
+  return numberToBytesPadded(SK);
 }
 
 export function deriveMaster(seed: Uint8Array): Uint8Array {
