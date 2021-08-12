@@ -39,6 +39,10 @@ function eth2PubFromBytes(bytes, path) {
 }
 ```
 
+## Users
+
+The project is used in iancoleman's [eip2333-tool](https://iancoleman.io/eip2333/)
+
 ## License
 
 MIT (c) Paul Miller [(https://paulmillr.com)](https://paulmillr.com), see LICENSE file.
