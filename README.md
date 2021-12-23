@@ -28,7 +28,7 @@ const child = deriveChild(master, 0); // 0 is numeric index
 ```js
 const bls = require('noble-bls12-381');
 const keygen = require('bls12-381-keygen');
-const bip39 = require('bip39');
+const bip39 = require('micro-bip39');
 function eth2PrivFromBytes(bytes, path = 'm/12381/3600/0/0/0') {
   const mnemonic = bip39.entropyToMnemonic(bytes);
   const seed = bip39.mnemonicToSeedSync(mnemonic);
