@@ -26,7 +26,7 @@ const child = deriveChild(master, 0); // 0 is numeric index
 ## Generating BIP32 seeds for ETH2
 
 ```js
-const bls = require('noble-bls12-381');
+const bls = require('@noble/bls12-381');
 const keygen = require('bls12-381-keygen');
 const bip39 = require('micro-bip39');
 function eth2PrivFromBytes(bytes, path = 'm/12381/3600/0/0/0') {
