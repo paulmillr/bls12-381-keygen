@@ -18,7 +18,7 @@ Node.js and browser:
 - `deriveChild` takes `Uint8Array, number` and returns `Uint8Array`
 
 ```js
-const {deriveMaster, deriveChild} = require('bls12-381-keygen');
+import { deriveMaster, deriveChild } from 'bls12-381-keygen';
 const master = deriveMaster(new Uint8Array([0xde, 0xad, 0xbe, 0xef]));
 const child = deriveChild(master, 0); // 0 is numeric index
 ```
