@@ -26,11 +26,13 @@ const child = deriveChild(master, 0); // 0 is numeric index
 ## Generating BIP32 seeds for ETH2
 
 ```js
-const bls = require('@noble/bls12-381');
-const keygen = require('bls12-381-keygen');
-const bip39 = require('micro-bip39');
+import * as bls from '@noble/bls12-381';
+import * as keygen from 'bls12-381-keygen';
+import * as bip39 from 'micro-bip39';
+import { wordlist } from 'micro-bip39/wordlists/english';
+
 function eth2PrivFromBytes(bytes, path = 'm/12381/3600/0/0/0') {
-  const mnemonic = bip39.entropyToMnemonic(bytes);
+  const mnemonic = bip39.entropyToMnemonic(bytes, wordlist);
   const seed = bip39.mnemonicToSeedSync(mnemonic);
   return keygen.deriveSeedTree(seed, path);
 }
