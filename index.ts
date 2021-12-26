@@ -73,11 +73,15 @@ function ikmToLamportSK(ikm: Uint8Array, salt: Uint8Array) {
   return Array.from({ length: 255 }, (_, i) => okm.slice(i * 32, (i + 1) * 32));
 }
 
+function assertUint32(index: number) {
+  if (!Number.isSafeInteger(index) || index < 0 || index > 2 ** 32 - 1) {
+    throw new TypeError('Expected valid uint32 number');
+  }
+}
+
 function parentSKToLamportPK(parentSK: Uint8Array, index: number) {
   if (!(parentSK instanceof Uint8Array)) throw new TypeError('Expected Uint8Array');
-  if (!Number.isSafeInteger(index) || index < 0 || index > 2 ** 32 - 1) {
-    throw new TypeError('Expected positive number');
-  }
+  assertUint32(index);
   const salt = i2osp(index, 4);
   const ikm = parentSK;
   const lamport0 = ikmToLamportSK(ikm, salt);
@@ -112,10 +116,23 @@ export function deriveSeedTree(seed: Uint8Array, path: string): Uint8Array {
   if (typeof path !== 'string') throw new Error('Derivation path must be string');
   const indices = path.split('/');
   if (indices.shift() !== 'm') throw new Error('First character of path must be "m"');
-  const nodes = indices.map((i) => Number.parseInt(i));
   let sk = deriveMaster(seed);
-  for (const node of nodes) {
+  const nodes = indices.map((i) => Number.parseInt(i));
+  nodes.forEach((node) => {
     sk = deriveChild(sk, node);
-  }
+  });
   return sk;
+}
+
+export const EIP2334_KEY_TYPES = ['withdrawal', 'signing'] as const;
+export type EIP2334KeyType = typeof EIP2334_KEY_TYPES[number];
+export function deriveEIP2334Key(seed: Uint8Array, type: EIP2334KeyType, index: number) {
+  if (!(seed instanceof Uint8Array)) throw new Error('Valid seed expected');
+  if (!EIP2334_KEY_TYPES.includes(type)) throw new Error('Valid keystore type expected');
+  assertUint32(index);
+  // EIP-2334 specifies following derivation paths:
+  // m/12381/3600/0/0   for withdrawal
+  // m/12381/3600/0/0/0 for signing
+  const path = `m/12381/3600/${index}/0${type === 'signing' ? '/0' : ''}`;
+  return { key: deriveSeedTree(seed, path), path };
 }

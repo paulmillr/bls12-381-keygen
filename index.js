@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deriveSeedTree = exports.deriveChild = exports.deriveMaster = exports.hkdfModR = void 0;
+exports.deriveEIP2334Key = exports.EIP2334_KEY_TYPES = exports.deriveSeedTree = exports.deriveChild = exports.deriveMaster = exports.hkdfModR = void 0;
 const hkdf_1 = require("@noble/hashes/hkdf");
 const sha256_1 = require("@noble/hashes/sha256");
 // Verify this with EIP-2333: https://eips.ethereum.org/EIPS/eip-2333
@@ -67,12 +67,15 @@ function ikmToLamportSK(ikm, salt) {
     const okm = hkdf_1.hkdf(sha256_1.sha256, ikm, salt, undefined, 32 * 255);
     return Array.from({ length: 255 }, (_, i) => okm.slice(i * 32, (i + 1) * 32));
 }
+function assertUint32(index) {
+    if (!Number.isSafeInteger(index) || index < 0 || index > 2 ** 32 - 1) {
+        throw new TypeError('Expected valid uint32 number');
+    }
+}
 function parentSKToLamportPK(parentSK, index) {
     if (!(parentSK instanceof Uint8Array))
         throw new TypeError('Expected Uint8Array');
-    if (!Number.isSafeInteger(index) || index < 0 || index >= 2 ** 32) {
-        throw new TypeError('Expected positive number');
-    }
+    assertUint32(index);
     const salt = i2osp(index, 4);
     const ikm = parentSK;
     const lamport0 = ikmToLamportSK(ikm, salt);
@@ -108,11 +111,25 @@ function deriveSeedTree(seed, path) {
     const indices = path.split('/');
     if (indices.shift() !== 'm')
         throw new Error('First character of path must be "m"');
-    const nodes = indices.map((i) => Number.parseInt(i));
     let sk = deriveMaster(seed);
-    for (const node of nodes) {
+    const nodes = indices.map((i) => Number.parseInt(i));
+    nodes.forEach((node) => {
         sk = deriveChild(sk, node);
-    }
+    });
     return sk;
 }
 exports.deriveSeedTree = deriveSeedTree;
+exports.EIP2334_KEY_TYPES = ['withdrawal', 'signing'];
+function deriveEIP2334Key(seed, type, index) {
+    if (!(seed instanceof Uint8Array))
+        throw new Error('Valid seed expected');
+    if (!exports.EIP2334_KEY_TYPES.includes(type))
+        throw new Error('Valid keystore type expected');
+    assertUint32(index);
+    // EIP-2334 specifies following derivation paths:
+    // m/12381/3600/0/0   for withdrawal
+    // m/12381/3600/0/0/0 for signing
+    const path = `m/12381/3600/${index}/0${type === 'signing' ? '/0' : ''}`;
+    return { key: deriveSeedTree(seed, path), path };
+}
+exports.deriveEIP2334Key = deriveEIP2334Key;

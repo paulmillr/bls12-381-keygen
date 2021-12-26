@@ -1,7 +1,7 @@
 {
   "name": "bls12-381-keygen",
   "version": "0.2.0",
-  "description": "BLS12-381 Key Generation compatible with EIP-2333. For browsers & node.",
+  "description": "Minimal & secure BLS12-381 Key Generation compatible with EIP-2333, EIP-2334",
   "main": "index.js",
   "files": [
     "index.js",
@@ -19,6 +19,8 @@
     "eip",
     "eip2333",
     "2333",
+    "eip2334",
+    "2334",
     "key",
     "keygen",
     "generation",
