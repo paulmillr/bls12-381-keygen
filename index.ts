@@ -1,4 +1,5 @@
-import {hash as sha256, hkdf} from "fast-sha256";
+import { hkdf } from '@noble/hashes/hkdf';
+import { sha256 } from '@noble/hashes/sha256';
 
 // Verify this with EIP-2333: https://eips.ethereum.org/EIPS/eip-2333
 
@@ -68,13 +69,13 @@ function concatBytes(...arrays: Uint8Array[]): Uint8Array {
 }
 
 function ikmToLamportSK(ikm: Uint8Array, salt: Uint8Array) {
-  const okm = hkdf(ikm, salt, undefined, 32 * 255);
+  const okm = hkdf(sha256, ikm, salt, undefined, 32 * 255);
   return Array.from({ length: 255 }, (_, i) => okm.slice(i * 32, (i + 1) * 32));
 }
 
 function parentSKToLamportPK(parentSK: Uint8Array, index: number) {
   if (!(parentSK instanceof Uint8Array)) throw new TypeError('Expected Uint8Array');
-  if (!Number.isSafeInteger(index) || index < 0 || index >= 2 ** 32) {
+  if (!Number.isSafeInteger(index) || index < 0 || index > 2 ** 32 - 1) {
     throw new TypeError('Expected positive number');
   }
   const salt = i2osp(index, 4);
@@ -87,13 +88,13 @@ function parentSKToLamportPK(parentSK: Uint8Array, index: number) {
 }
 
 export function hkdfModR(ikm: Uint8Array, keyInfo = new Uint8Array()) {
-  let salt = utf8ToBytes("BLS-SIG-KEYGEN-SALT-");
+  let salt = utf8ToBytes('BLS-SIG-KEYGEN-SALT-');
   let SK = 0n;
   const input = concatBytes(ikm, Uint8Array.from([0x00]));
   const label = concatBytes(keyInfo, Uint8Array.from([0x00, 0x30]));
   while (SK === 0n) {
     salt = sha256(salt);
-    const okm = hkdf(input, salt, label, 48);
+    const okm = hkdf(sha256, input, salt, label, 48);
     SK = os2ip(okm) % blsR;
   }
   return numberToBytesPadded(SK);
@@ -107,11 +108,11 @@ export function deriveChild(parentKey: Uint8Array, index: number): Uint8Array {
   return hkdfModR(parentSKToLamportPK(parentKey, index));
 }
 
-export function deriveSeedTree(seed: Uint8Array, path: string) {
+export function deriveSeedTree(seed: Uint8Array, path: string): Uint8Array {
   if (typeof path !== 'string') throw new Error('Derivation path must be string');
   const indices = path.split('/');
   if (indices.shift() !== 'm') throw new Error('First character of path must be "m"');
-  const nodes = indices.map(i => Number.parseInt(i));
+  const nodes = indices.map((i) => Number.parseInt(i));
   let sk = deriveMaster(seed);
   for (const node of nodes) {
     sk = deriveChild(sk, node);
