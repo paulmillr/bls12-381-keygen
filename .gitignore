@@ -1,0 +1,10 @@
+node_modules
+/build/
+/lib
+/index.js
+/index.d.ts
+/index.d.ts.map
+/pack
+/test.js
+/test.d.ts
+/test.d.ts.map
