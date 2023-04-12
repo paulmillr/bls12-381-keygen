@@ -1,36 +1,7 @@
-import { should } from "micro-should";
-import assert from "assert";
-import { deriveMaster, deriveChild } from ".";
-
-
-export function bytesToHex(uint8a: Uint8Array): string {
-  // pre-caching chars could speed this up 6x.
-  let hex = '';
-  for (let i = 0; i < uint8a.length; i++) {
-    hex += uint8a[i].toString(16).padStart(2, '0');
-  }
-  return hex;
-}
-
-export function hexToBytes(hex: string): Uint8Array {
-  if (hex.length & 1) hex = `0${hex}`;
-  const array = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < array.length; i++) {
-    const j = i * 2;
-    array[i] = Number.parseInt(hex.slice(j, j + 2), 16);
-  }
-  return array;
-}
-
-export function numberToHex(num: number | bigint, padToBytes: number = 0): string {
-  const hex = num.toString(16);
-  const p1 = hex.length & 1 ? `0${hex}` : hex;
-  return p1.padStart(padToBytes * 2, "0");
-}
-
-export function numberToBytes(num: number | bigint): Uint8Array {
-  return hexToBytes(numberToHex(num));
-}
+import { strictEqual } from 'assert';
+import { should } from 'micro-should';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
+import { deriveMaster, deriveChild } from '.';
 
 const vectors: [string, string, number, string][] = [
   [
@@ -59,7 +30,7 @@ const vectors: [string, string, number, string][] = [
   ],
 ];
 
-function big(item: Uint8Array) {
+function bytesToNumberBE(item: Uint8Array): bigint {
   return BigInt(`0x${bytesToHex(item)}`);
 }
 
@@ -70,8 +41,8 @@ for (const vector of vectors) {
     const [seed, expMaster, childIndex, expChild] = vector;
     const master = deriveMaster(hexToBytes(seed));
     const child = deriveChild(master, childIndex);
-    assert.strictEqual(big(master), BigInt(expMaster), 'master key is not equal');
-    assert.strictEqual(big(child), BigInt(expChild), 'child key is not equal');
+    strictEqual(bytesToNumberBE(master), BigInt(expMaster), 'master key is not equal');
+    strictEqual(bytesToNumberBE(child), BigInt(expChild), 'child key is not equal');
   });
 }
 
