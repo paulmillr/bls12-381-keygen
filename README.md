@@ -3,10 +3,10 @@
 Minimal BLS12-381 Key Generation compatible with [EIP-2333](https://eips.ethereum.org/EIPS/eip-2333).
 Can be used to generate EIP-2334 keys for ETH beacon chain.
 
-Has only one tiny dependency on `@noble/hashes` for SHA256 and HKDF.
+Has only one dependency on `@noble/hashes` for SHA256 and HKDF.
 
-If you're looking for actual implementation of the elliptic curve,
-use module [noble-bls12-381](https://github.com/paulmillr/noble-bls12-381).
+If you're looking for actual implementation of the bls12-381 elliptic curve,
+use module [noble-curves](https://github.com/paulmillr/noble-curves).
 The bls12-381-keygen only generates private keys, by EIP-2333 specification.
 
 Check out live demo in iancoleman's [eip2333-tool](https://iancoleman.io/eip2333/)
