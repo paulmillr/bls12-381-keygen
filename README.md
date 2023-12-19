@@ -44,8 +44,8 @@ const signKey1a = deriveEIP2334Key(seed, 'signing', 0);
 const signKey1b = deriveSeedTree(seed, 'm/12381/3600/0/0/0');
 
 // To generate mnemonics for EIP-2334 keystores
-import { entropyToMnemonic, mnemonicToSeedSync } from 'micro-bip39';
-import { wordlist } from 'micro-bip39/wordlists/english';
+import { entropyToMnemonic, mnemonicToSeedSync } from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 // bytes = some random sequence
 const mnSeed = mnemonicToSeedSync(entropyToMnemonic(bytes, wordlist));
 deriveEIP2334Key(mnSeed, 'signing', index);
