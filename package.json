@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "build": "tsc -d",
+    "lint": "prettier --check index.ts",
+    "format": "prettier --write index.ts",
     "test": "node test.js"
   },
   "keywords": [
@@ -41,6 +43,7 @@
   "devDependencies": {
     "@types/assert": "1.5.2",
     "micro-should": "0.4.0",
+    "prettier": "3.1.1",
     "typescript": "5.3.2"
   }
 }

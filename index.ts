@@ -91,7 +91,7 @@ export function deriveSeedTree(seed: Uint8Array, path: string): Uint8Array {
 }
 
 export const EIP2334_KEY_TYPES = ['withdrawal', 'signing'] as const;
-export type EIP2334KeyType = typeof EIP2334_KEY_TYPES[number];
+export type EIP2334KeyType = (typeof EIP2334_KEY_TYPES)[number];
 export function deriveEIP2334Key(seed: Uint8Array, type: EIP2334KeyType, index: number) {
   if (!(seed instanceof Uint8Array)) throw new Error('Valid seed expected');
   if (!EIP2334_KEY_TYPES.includes(type)) throw new Error('Valid keystore type expected');
