@@ -34,7 +34,7 @@
   "author": "Paul Miller (https://paulmillr.com)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paulmillr/bls12-381-keygen.git"
+    "url": "git+https://github.com/paulmillr/bls12-381-keygen.git"
   },
   "license": "MIT",
   "dependencies": {
