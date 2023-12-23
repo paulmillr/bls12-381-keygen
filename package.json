@@ -2,14 +2,16 @@
   "name": "bls12-381-keygen",
   "version": "0.2.3",
   "description": "Minimal & secure BLS12-381 Key Generation compatible with EIP-2333, EIP-2334",
+  "type": "module",
   "main": "index.js",
+  "module": "index.js",
   "files": [
     "index.js",
     "index.d.ts",
     "index.ts"
   ],
   "scripts": {
-    "build": "tsc -d",
+    "build": "tsc",
     "lint": "prettier --check index.ts",
     "format": "prettier --write index.ts",
     "test": "node test.js"

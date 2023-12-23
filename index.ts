@@ -15,8 +15,9 @@ function numberToBytesBE(n: bigint, len: number) {
 function os2ip(bytes: Uint8Array): bigint {
   let result = 0n;
   for (let i = 0; i < bytes.length; i++) {
+    const byte = bytes[i]!;
     result <<= 8n;
-    result += BigInt(bytes[i]);
+    result += BigInt(byte);
   }
   return result;
 }

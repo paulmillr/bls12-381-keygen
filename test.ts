@@ -1,7 +1,8 @@
-import { strictEqual } from 'assert';
+// @ts-ignore
+import { strictEqual } from 'node:assert';
 import { should } from 'micro-should';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
-import { deriveMaster, deriveChild } from '.';
+import { deriveMaster, deriveChild } from './index.js';
 
 const vectors: [string, string, number, string][] = [
   [
