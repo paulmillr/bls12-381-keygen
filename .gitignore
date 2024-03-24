@@ -8,3 +8,4 @@ node_modules
 /test.js
 /test.d.ts
 /test.d.ts.map
+/index.js.map
