@@ -1,9 +1,14 @@
 # bls12-381-keygen
 
 Minimal BLS12-381 Key Generation compatible with [EIP-2333](https://eips.ethereum.org/EIPS/eip-2333).
-Can be used to generate EIP-2334 keys for ETH beacon chain.
 
-Has only one dependency on `@noble/hashes` for SHA256 and HKDF.
+## Switch to [micro-key-producer](https://github.com/paulmillr/micro-key-producer)
+
+The package has been integrated into micro-key-producer. It is now deprecated.
+
+---
+
+Can be used to generate EIP-2334 keys for ETH beacon chain. Has only one dependency on `@noble/hashes` for SHA256 and HKDF.
 
 If you're looking for actual implementation of the bls12-381 elliptic curve,
 use module [noble-curves](https://github.com/paulmillr/noble-curves).
@@ -23,9 +28,13 @@ The API is the following:
 function deriveMaster(seed: Uint8Array): Uint8Array;
 function deriveChild(parentKey: Uint8Array, index: number): Uint8Array;
 function deriveSeedTree(seed: Uint8Array, path: string): Uint8Array;
-const EIP2334_KEY_TYPES: readonly ["withdrawal", "signing"];
-type EIP2334KeyType = typeof EIP2334_KEY_TYPES[number];
-function deriveEIP2334Key(seed: Uint8Array, type: EIP2334KeyType, index: number): {
+const EIP2334_KEY_TYPES: readonly ['withdrawal', 'signing'];
+type EIP2334KeyType = (typeof EIP2334_KEY_TYPES)[number];
+function deriveEIP2334Key(
+  seed: Uint8Array,
+  type: EIP2334KeyType,
+  index: number
+): {
   key: Uint8Array;
   path: string;
 };
@@ -36,7 +45,7 @@ Usage example:
 ```ts
 import { deriveEIP2334Key, deriveSeedTree } from 'bls12-381-keygen';
 
-const seed = (new Uint8Array(32)).fill(7); // must be random
+const seed = new Uint8Array(32).fill(7); // must be random
 deriveEIP2334Key(seed, 'withdrawal', 6);
 
 // Those two are equal
