@@ -1,12 +1,13 @@
 # bls12-381-keygen
 
-Minimal BLS12-381 Key Generation compatible with [EIP-2333](https://eips.ethereum.org/EIPS/eip-2333).
+> [!WARNING]  
+> The repository has been merged into [micro-key-producer](https://github.com/paulmillr/micro-key-producer). Please head to the new repo for updates.
 
-## Switch to [micro-key-producer](https://github.com/paulmillr/micro-key-producer)
-
-The package has been integrated into micro-key-producer. It is now deprecated.
+    npm install micro-key-producer
 
 ---
+
+Minimal BLS12-381 Key Generation compatible with [EIP-2333](https://eips.ethereum.org/EIPS/eip-2333).
 
 Can be used to generate EIP-2334 keys for ETH beacon chain. Has only one dependency on `@noble/hashes` for SHA256 and HKDF.
 
